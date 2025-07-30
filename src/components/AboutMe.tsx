@@ -1,15 +1,21 @@
 import type {Hero} from "./Hero";
-import {base_url, period_month} from "../utils/constants.ts";
+import {base_url, characters, period_month} from "../utils/constants.ts";
 import {useEffect, useState} from "react";
+import {useParams} from "react-router";
+
 
 const AboutMe = () => {
     const [hero, setHero] = useState<Hero | null>(null);
+    const {heroId} = useParams();
+
     useEffect(() => {
-        const hero = JSON.parse(localStorage.getItem("hero")!);
+        if (!heroId || !characters) return;
+
+        const hero = JSON.parse(localStorage.getItem(`hero ${heroId}`)!);
         if (hero && ((Date.now() - hero.timestamp) < period_month)) {
             setHero(hero.payload);
         } else {
-            fetch(`${base_url}/v1/peoples/1`)
+            fetch(`${base_url}/v1/people/${heroId}`)
                 .then(response => response.json())
                 .then(data => {
                     const info: Hero = {
@@ -23,13 +29,13 @@ const AboutMe = () => {
                         eye_color: data.eye_color
                     }
                     setHero(info);
-                    localStorage.setItem("hero", JSON.stringify({
+                    localStorage.setItem(`hero ${heroId}`, JSON.stringify({
                         payload: info,
                         timestamp: Date.now()
                     }));
                 })
         }
-    }, [])
+    }, [heroId])
 
     return (
         <>
