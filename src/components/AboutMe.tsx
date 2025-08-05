@@ -1,24 +1,30 @@
-import type {Hero} from "./Hero";
-import {base_url, characters, period_month} from "../utils/constants.ts";
-import {useEffect, useState} from "react";
+import {characters, defaultHero, period_month} from "../utils/constants.ts";
+import {useContext, useEffect, useState} from "react";
+import type {HeroInfo} from "../utils/types";
 import {useParams} from "react-router";
+import {SWContext} from "../utils/context.ts";
+import ErrorPage from "./ErrorPage.tsx";
 
 
 const AboutMe = () => {
-    const [hero, setHero] = useState<Hero | null>(null);
-    const {heroId} = useParams();
+    const [hero, setHero] = useState<HeroInfo>();
+    let {heroId = defaultHero} = useParams();
+    const {changeHero} = useContext(SWContext);
+
 
     useEffect(() => {
-        if (!heroId || !characters) return;
-
-        const hero = JSON.parse(localStorage.getItem(`hero ${heroId}`)!);
+        if (!(heroId in characters)) {
+            heroId = defaultHero;
+        }
+        changeHero(heroId);
+        const hero = JSON.parse(localStorage.getItem(heroId)!);
         if (hero && ((Date.now() - hero.timestamp) < period_month)) {
             setHero(hero.payload);
         } else {
-            fetch(`${base_url}/v1/people/${heroId}`)
+            fetch(characters[heroId].url)
                 .then(response => response.json())
                 .then(data => {
-                    const info: Hero = {
+                    const info = {
                         name: data.name,
                         gender: data.gender,
                         birth_year: data.birth_year,
@@ -29,7 +35,7 @@ const AboutMe = () => {
                         eye_color: data.eye_color
                     }
                     setHero(info);
-                    localStorage.setItem(`hero ${heroId}`, JSON.stringify({
+                    localStorage.setItem(heroId, JSON.stringify({
                         payload: info,
                         timestamp: Date.now()
                     }));
@@ -37,19 +43,20 @@ const AboutMe = () => {
         }
     }, [heroId])
 
-    return (
+
+    return (heroId in characters) ? (
         <>
             {(!!hero) &&
                 <div className={'text-[2em] text-justify tracking-widest leading-14 ml-8'}>
-                    {Object.keys(hero).map((key) => (
-                        <p key={key}>
-                            <span className="text-3xl capitalize">{key.replace('_', ' ')}</span>: {hero[key as keyof Hero]}
-                        </p>
-                    ))}
+                    {Object.keys(hero).map(key => <p key={key}>
+                        <span
+                            className={'text-3xl capitalize'}>{key.replace('_', ' ')}</span>: {hero[key as keyof HeroInfo]}
+                    </p>)}
                 </div>
             }
         </>
-    );
+    ) : <ErrorPage/>;
 };
+
 
 export default AboutMe;
