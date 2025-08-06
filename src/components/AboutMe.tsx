@@ -8,13 +8,13 @@ import ErrorPage from "./ErrorPage.tsx";
 
 const AboutMe = () => {
     const [hero, setHero] = useState<HeroInfo>();
-    let {heroId = defaultHero} = useParams();
+    const {heroId = defaultHero} = useParams();
     const {changeHero} = useContext(SWContext);
 
 
     useEffect(() => {
         if (!(heroId in characters)) {
-            heroId = defaultHero;
+            return;
         }
         changeHero(heroId);
         const hero = JSON.parse(localStorage.getItem(heroId)!);
@@ -60,3 +60,5 @@ const AboutMe = () => {
 
 
 export default AboutMe;
+
+

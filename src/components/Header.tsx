@@ -1,7 +1,8 @@
 import Navigation from "./Navigation.tsx";
+import {useContext} from "react";
 import {SWContext} from "../utils/context.ts";
 import {characters} from "../utils/constants.ts";
-import {useContext} from "react";
+
 
 const Header = () => {
     const {hero} = useContext(SWContext)
@@ -13,4 +14,6 @@ const Header = () => {
     );
 };
 
+
 export default Header;
+

@@ -2,8 +2,10 @@ import {useEffect, useState} from "react";
 import {base_url} from "../utils/constants.ts";
 import Text from "./ui/Text.tsx";
 
+
 const OpeningCrawl = () => {
     const [openingCrawl, setOpeningCrawl] = useState('Loading...');
+
 
     useEffect(() => {
         const opening_crawl = sessionStorage.getItem('opening_crawl');
@@ -20,9 +22,11 @@ const OpeningCrawl = () => {
         }
     }, [])
 
+
     return (
         <Text>{openingCrawl}</Text>
     )
 }
+
 
 export default OpeningCrawl;

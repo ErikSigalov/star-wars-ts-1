@@ -1,5 +1,6 @@
 import Button from "./ui/Button.tsx";
 
+
 const Footer = () => {
     return (
         <footer className="clear-both bg-grey-color h-20 rounded-b-2xl grid grid-cols-7 items-center">
@@ -8,5 +9,6 @@ const Footer = () => {
         </footer>
     );
 };
+
 
 export default Footer;

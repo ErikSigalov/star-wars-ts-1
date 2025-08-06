@@ -1,3 +1,4 @@
+
 import NavItem from "./NavItem.tsx";
 import {navItems} from "../utils/constants.ts";
 
@@ -8,5 +9,4 @@ const Navigation = () => {
         </nav>
     );
 };
-
 export default Navigation;
